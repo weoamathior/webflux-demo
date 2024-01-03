@@ -5,6 +5,7 @@ import irish.bla.webfluxdemo.exception.InputValidationException;
 import irish.bla.webfluxdemo.service.ReactiveMathService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,5 +48,14 @@ public class ReactiveMathValidationController {
                 })
                 .cast(Integer.class)
                 .flatMap(this.reactiveMathService::findSquare);
+    }
+
+    @GetMapping("square/{input}/assignment")
+    public Mono<ResponseEntity<Response>> assignment(@PathVariable int input) {
+        return Mono.just(input)
+                .filter(i -> i >=10 && i <=20)
+                .flatMap(this.reactiveMathService::findSquare)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.badRequest().build());
     }
 }
