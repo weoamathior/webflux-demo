@@ -4,11 +4,15 @@ import irish.bla.webfluxdemo.dto.MultiplyRequestDto;
 import irish.bla.webfluxdemo.dto.Response;
 import irish.bla.webfluxdemo.service.ReactiveMathService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
+@Slf4j
 @RestController
 @RequestMapping("reactive-math")
 @RequiredArgsConstructor
@@ -44,7 +48,8 @@ public class ReactiveMathController {
     curl -XPOST -H 'Content-Type: application/json'  -d '{"first":5,"second":9}' http://localhost:8080/reactive-math/multiply
      */
     @PostMapping("multiply")
-    public Mono<Response> multiply(@RequestBody Mono<MultiplyRequestDto> requestDtoMono) {
+    public Mono<Response> multiply(@RequestBody Mono<MultiplyRequestDto> requestDtoMono, @RequestHeader Map<String,String> headers) {
+        log.info("headers = {}", headers);
         return this.reactiveMathService.multiply(requestDtoMono);
     }
 }
