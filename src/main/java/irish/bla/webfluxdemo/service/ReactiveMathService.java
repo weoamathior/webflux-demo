@@ -1,5 +1,6 @@
 package irish.bla.webfluxdemo.service;
 
+import irish.bla.webfluxdemo.dto.MultiplyRequestDto;
 import irish.bla.webfluxdemo.dto.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,11 @@ public class ReactiveMathService {
                 .collect(Collectors.toList());
 
         return Flux.fromIterable(list);
+    }
+
+    public Mono<Response> multiply(Mono<MultiplyRequestDto> dtoMono) {
+        return dtoMono
+                .map(dto -> dto.getFirst() * dto.getSecond())
+                .map(Response::new);
     }
 }

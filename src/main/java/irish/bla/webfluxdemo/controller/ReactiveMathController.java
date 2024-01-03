@@ -1,13 +1,11 @@
 package irish.bla.webfluxdemo.controller;
 
+import irish.bla.webfluxdemo.dto.MultiplyRequestDto;
 import irish.bla.webfluxdemo.dto.Response;
 import irish.bla.webfluxdemo.service.ReactiveMathService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -41,4 +39,12 @@ public class ReactiveMathController {
         return this.reactiveMathService.multTableNoPipeline(input);
     }
 
+
+    /*
+    curl -XPOST -H 'Content-Type: application/json'  -d '{"first":5,"second":9}' http://localhost:8080/reactive-math/multiply
+     */
+    @PostMapping("multiply")
+    public Mono<Response> multiply(@RequestBody Mono<MultiplyRequestDto> requestDtoMono) {
+        return this.reactiveMathService.multiply(requestDtoMono);
+    }
 }
