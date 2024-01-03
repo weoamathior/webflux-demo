@@ -30,4 +30,22 @@ public class ReactiveMathValidationController {
         }
         return this.reactiveMathService.findSquare(input);
     }
+
+    /*
+    The 'reactive' way of doing the above.  Note the behavior is the same and the controller advice still kicks in
+    when the exception is thrown
+     */
+    @GetMapping("square/{input}/mono-error")
+    public Mono<Response> monoError(@PathVariable int input) {
+        return Mono.just(input)
+                .handle((integer, sink) -> {
+                    if (integer >=10 && integer <=20 ) {
+                        sink.next(integer);
+                    } else {
+                        sink.error(new InputValidationException(integer));
+                    }
+                })
+                .cast(Integer.class)
+                .flatMap(this.reactiveMathService::findSquare);
+    }
 }
