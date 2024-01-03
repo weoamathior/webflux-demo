@@ -32,4 +32,13 @@ public class ReactiveMathController {
         return this.reactiveMathService.multTable(input);
     }
 
+    /*
+    The underlying service does not use the reactive pipeline and therefore will not exhibit the same
+    behavior as the method above.
+     */
+    @GetMapping(value = "table/{input}/stream/no",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Response> multTableStreamNo(@PathVariable int input) {
+        return this.reactiveMathService.multTableNoPipeline(input);
+    }
+
 }

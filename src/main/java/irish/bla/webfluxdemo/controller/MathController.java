@@ -24,7 +24,7 @@ public class MathController {
 
     @GetMapping("table/{input}")
     public List<Response> multTable(@PathVariable int input) {
-        return this.mathService.multiplicationTasble(input);
+        return this.mathService.multiplicationTable(input);
     }
 
 }
