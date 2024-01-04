@@ -4,6 +4,7 @@ import irish.bla.webfluxdemo.dto.Response;
 import irish.bla.webfluxdemo.service.ReactiveMathService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -28,4 +29,11 @@ public class RequestHandler {
         return ServerResponse.ok().body(responseFlux, Response.class);
     }
 
+    public Mono<ServerResponse> tableStreamHandler(ServerRequest request) {
+        int input = Integer.parseInt(request.pathVariable("input"));
+        Flux<Response> responseFlux = reactiveMathService.multTable(input);
+        return ServerResponse.ok()
+                .contentType(MediaType.TEXT_EVENT_STREAM)
+                .body(responseFlux, Response.class);
+    }
 }
