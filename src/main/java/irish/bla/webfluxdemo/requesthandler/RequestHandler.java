@@ -1,5 +1,6 @@
 package irish.bla.webfluxdemo.requesthandler;
 
+import irish.bla.webfluxdemo.dto.MultiplyRequestDto;
 import irish.bla.webfluxdemo.dto.Response;
 import irish.bla.webfluxdemo.service.ReactiveMathService;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,12 @@ public class RequestHandler {
         return ServerResponse.ok()
                 .contentType(MediaType.TEXT_EVENT_STREAM)
                 .body(responseFlux, Response.class);
+    }
+
+    public Mono<ServerResponse> multiplyHandler(ServerRequest request) {
+        Mono<MultiplyRequestDto> requestDtoMono = request.bodyToMono(MultiplyRequestDto.class);
+        Mono<Response> responseMono = this.reactiveMathService.multiply(requestDtoMono);
+        return ServerResponse.ok()
+                .body(responseMono, Response.class);
     }
 }

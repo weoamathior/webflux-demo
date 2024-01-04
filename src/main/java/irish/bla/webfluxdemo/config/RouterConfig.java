@@ -19,6 +19,8 @@ public class RouterConfig {
                 .GET("router/square/{input}", requestHandler::squareHandler)
                 .GET("router/table/{input}", requestHandler::tableHandler)
                 .GET("router/table/{input}/stream", requestHandler::tableStreamHandler)
+                // curl -XPOST -H 'Content-Type: application/json'  -d '{"first":5,"second":9}' http://localhost:8080/router/multiply
+                .POST("router/multiply", requestHandler::multiplyHandler)
                 .build();
     }
 }
