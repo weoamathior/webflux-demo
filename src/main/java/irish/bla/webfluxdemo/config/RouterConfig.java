@@ -19,16 +19,23 @@ import java.util.function.BiFunction;
 public class RouterConfig {
 
     private final RequestHandler requestHandler;
-    @Bean
-    public RouterFunction<ServerResponse> serverResponseRouterFunction() {
+    private RouterFunction<ServerResponse> serverResponseRouterFunction() {
         return RouterFunctions.route()
-                .GET("router/square/{input}", requestHandler::squareHandler)
-                .GET("router/table/{input}", requestHandler::tableHandler)
-                .GET("router/table/{input}/stream", requestHandler::tableStreamHandler)
+                .GET("square/{input}", requestHandler::squareHandler)
+                .GET("table/{input}", requestHandler::tableHandler)
+                .GET("table/{input}/stream", requestHandler::tableStreamHandler)
                 // curl -XPOST -H 'Content-Type: application/json'  -d '{"first":5,"second":9}' http://localhost:8080/router/multiply
-                .POST("router/multiply", requestHandler::multiplyHandler)
-                .GET("router/square/{input}/validation", requestHandler::squareHandlerWithValidation)
+                .POST("multiply", requestHandler::multiplyHandler)
+                .GET("square/{input}/validation", requestHandler::squareHandlerWithValidation)
                 .onError(InputValidationException.class, exceptionHandler())
+                .build();
+    }
+    // Can have multiple router beans
+    @Bean
+    public RouterFunction<ServerResponse> highLevelRouter() {
+        return RouterFunctions.route()
+                // delegating to the other router
+                .path("router", this::serverResponseRouterFunction)
                 .build();
     }
 
