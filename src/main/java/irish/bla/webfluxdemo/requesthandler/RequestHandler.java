@@ -1,7 +1,9 @@
 package irish.bla.webfluxdemo.requesthandler;
 
+import irish.bla.webfluxdemo.dto.InputFailedValidationResponse;
 import irish.bla.webfluxdemo.dto.MultiplyRequestDto;
 import irish.bla.webfluxdemo.dto.Response;
+import irish.bla.webfluxdemo.exception.InputValidationException;
 import irish.bla.webfluxdemo.service.ReactiveMathService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,5 +45,15 @@ public class RequestHandler {
         Mono<Response> responseMono = this.reactiveMathService.multiply(requestDtoMono);
         return ServerResponse.ok()
                 .body(responseMono, Response.class);
+    }
+
+    public Mono<ServerResponse> squareHandlerWithValidation(ServerRequest request) {
+        int input = Integer.parseInt(request.pathVariable("input"));
+        if (input < 10 || input > 20) {
+            //emitting the error signal - who handles it?
+            return Mono.error(new InputValidationException(input));
+        }
+        Mono<Response> responseMono = reactiveMathService.findSquare(input);
+        return ServerResponse.ok().body(responseMono, Response.class);
     }
 }
