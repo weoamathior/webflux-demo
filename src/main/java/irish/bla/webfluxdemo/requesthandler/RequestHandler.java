@@ -1,6 +1,5 @@
 package irish.bla.webfluxdemo.requesthandler;
 
-import irish.bla.webfluxdemo.dto.InputFailedValidationResponse;
 import irish.bla.webfluxdemo.dto.MultiplyRequestDto;
 import irish.bla.webfluxdemo.dto.Response;
 import irish.bla.webfluxdemo.exception.InputValidationException;
