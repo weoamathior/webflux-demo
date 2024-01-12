@@ -27,4 +27,18 @@ public class Lecture47GetMultiResponseTest extends BaseTest{
                 .expectNextCount(10)
                 .verifyComplete();
     }
+
+    @Test
+    void fluxStreamTest() {
+        Flux<Response> monoResponse = webClient
+                .get()
+                .uri("reactive-math/table/{input}/stream", 5)
+                .retrieve()
+                .bodyToFlux(Response.class)
+                .doOnNext(System.out::println);
+
+        StepVerifier.create(monoResponse)
+                .expectNextCount(10)
+                .verifyComplete();
+    }
 }
