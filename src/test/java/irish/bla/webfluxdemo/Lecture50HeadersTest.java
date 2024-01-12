@@ -36,4 +36,23 @@ public class Lecture50HeadersTest extends BaseTest{
         multiplyRequestDto.setSecond(b);
         return multiplyRequestDto;
     }
+
+    @Test
+    public void basicAuthTest() {
+        Mono<Response> responseMono = this.webClient
+                .post()
+                .uri("reactive-math/multiply")
+                .bodyValue(buildRequestDto(5, 2))
+                // Will send auth header "Authorization=Basic dXNlcm5hbWU6cGFzc3dvcmQ=,"
+                .headers(h -> h.setBasicAuth("username", "password"))
+                .retrieve()
+                .bodyToMono(Response.class)
+                .doOnNext(System.out::println);
+
+        StepVerifier.create(responseMono)
+                .expectNextCount(1)
+                .verifyComplete();
+
+    }
+
 }
