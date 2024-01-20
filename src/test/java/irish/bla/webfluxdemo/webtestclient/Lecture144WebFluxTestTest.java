@@ -14,6 +14,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 /*
 WebFluxTest doesn't create a lot of beans.
 Need to create mocks
@@ -53,6 +55,24 @@ public class Lecture144WebFluxTestTest {
                 .exchange()
                 .expectStatus().is2xxSuccessful()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(Response.class)
+                .hasSize(3);
+
+    }
+    @Test
+    void streamingResponseTest() {
+        Flux<Response> fluxRespones = Flux.range(1, 3)
+                .map(Response::new)
+                .delayElements(Duration.ofMillis(100));
+        Mockito.when(reactiveMathService.multTable(Mockito.anyInt()))
+                .thenReturn(fluxRespones);
+
+        webTestClient
+                .get()
+                .uri("/reactive-math/table/{input}/stream", 5)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectHeader().contentTypeCompatibleWith(MediaType.TEXT_EVENT_STREAM_VALUE)
                 .expectBodyList(Response.class)
                 .hasSize(3);
 
