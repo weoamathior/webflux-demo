@@ -1,5 +1,6 @@
 package irish.bla.webfluxdemo.webtestclient;
 
+import irish.bla.webfluxdemo.controller.ParamsController;
 import irish.bla.webfluxdemo.controller.ReactiveMathController;
 import irish.bla.webfluxdemo.dto.Response;
 import irish.bla.webfluxdemo.service.ReactiveMathService;
@@ -15,12 +16,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.Map;
 
 /*
 WebFluxTest doesn't create a lot of beans.
 Need to create mocks
  */
-@WebFluxTest(ReactiveMathController.class)
+@WebFluxTest(controllers = {ParamsController.class,ReactiveMathController.class})
 public class Lecture144WebFluxTestTest {
     @Autowired
     WebTestClient webTestClient;
@@ -76,5 +78,17 @@ public class Lecture144WebFluxTestTest {
                 .expectBodyList(Response.class)
                 .hasSize(3);
 
+    }
+
+    @Test
+    public void paramsTest() {
+        Map<String, Integer> map = Map.of("count", 10, "page", 20);
+        this.webTestClient
+                .get()
+                .uri(b -> b.path("/jobs/search").query("count={count}&page={page}").build(map))
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBodyList(Integer.class)
+                .hasSize(2).contains(10,20);
     }
 }
