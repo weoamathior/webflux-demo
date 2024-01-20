@@ -20,8 +20,8 @@ public class RouterConfig {
         return RouterFunctions.route()
                 // intent - 10-19 accepted
                 // curl http://localhost:8080/router/square/10
-//                .GET("square/{input}", RequestPredicates.all(), requestHandler::squareHandler) // ok
-                .GET("square/{input}", RequestPredicates.path("*/1?").or(RequestPredicates.path("*/20")), requestHandler::squareHandler) // <- boom! 404
+                .GET("square/{input}", RequestPredicates.all(), requestHandler::squareHandler) // ok
+//                .GET("square/{input}", RequestPredicates.path("*/1?").or(RequestPredicates.path("*/20")), requestHandler::squareHandler) // <- boom! 404
 //                .GET("square/{input}", RequestPredicates.path("router/square/1?").or(RequestPredicates.path("router/square/20")), requestHandler::squareHandler) // ok
 //                .GET("square/{input}", req -> ServerResponse.badRequest().bodyValue("only 10-19 allowed"))
                 .GET("table/{input}", requestHandler::tableHandler)
