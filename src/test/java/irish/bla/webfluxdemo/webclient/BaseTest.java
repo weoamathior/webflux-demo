@@ -1,4 +1,4 @@
-package irish.bla.webfluxdemo;
+package irish.bla.webfluxdemo.webclient;
 
 import org.springframework.boot.test.context.SpringBootTest;
 

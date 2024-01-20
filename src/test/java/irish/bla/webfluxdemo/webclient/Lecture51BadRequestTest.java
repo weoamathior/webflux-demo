@@ -1,4 +1,4 @@
-package irish.bla.webfluxdemo;
+package irish.bla.webfluxdemo.webclient;
 
 import irish.bla.webfluxdemo.dto.Response;
 import org.junit.jupiter.api.Test;
