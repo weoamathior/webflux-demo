@@ -1,6 +1,7 @@
 package irish.bla.webfluxdemo.webtestclient;
 
 import irish.bla.webfluxdemo.dto.Response;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -31,5 +32,18 @@ public class Lecture142SimpleWebTestClientTest {
         StepVerifier.create(monoResponse)
                 .expectNextMatches(r -> r.getOutput() == 25)
                 .verifyComplete();
+    }
+
+    @Test
+    void fluentAssertionTest() {
+        webTestClient
+                .get()
+                .uri("/reactive-math/square/{input}", 5)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Response.class)
+                .value(b -> Assertions.assertThat(b.getOutput()).isEqualTo(25));
+
     }
 }
