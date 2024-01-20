@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /*
@@ -23,10 +24,11 @@ public class Lecture144WebFluxTestTest {
     WebTestClient webTestClient;
     @MockBean
     ReactiveMathService reactiveMathService;
+
     @Test
-    void fluentAssertionTest() {
+    void singleResponseTest() {
         Mockito.when(reactiveMathService.findSquare(Mockito.anyInt()))
-                        .thenReturn(Mono.just(new Response(25)));
+                .thenReturn(Mono.just(new Response(25)));
         webTestClient
                 .get()
                 .uri("/reactive-math/square/{input}", 5)
@@ -35,6 +37,24 @@ public class Lecture144WebFluxTestTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(Response.class)
                 .value(b -> Assertions.assertThat(b.getOutput()).isEqualTo(25));
+
+    }
+
+    @Test
+    void manyResponseTest() {
+        Flux<Response> fluxRespones = Flux.range(1, 3)
+                .map(Response::new);
+        Mockito.when(reactiveMathService.multTable(Mockito.anyInt()))
+                .thenReturn(fluxRespones);
+
+        webTestClient
+                .get()
+                .uri("/reactive-math/table/{input}", 5)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(Response.class)
+                .hasSize(3);
 
     }
 }
